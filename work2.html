@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>work 1: แบบทดสอบ ม.1</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="container-fluid p-5 bg-primary text-white text-center">
+  <h1>แบบทดสอบ เข้าม.1</h1>
+</div>
+  
+<div class="container mt-5 p-5">
+  <div class="row" id="startBox">
+     <button class="btn-primary btn" id="btnStart">เริ่มทำแบบทดสอบ</button>
+  </div>
+  <div class="row" id="quizBox">
+    <div id="quizListBox"></div>
+    <button class="btn-primary btn mt-3" id="btnCheckAnswer">ตรวจคำตอบ</button>
+    <div id="resultBox" class="mt-3"></div>
+  </div>
+</div>
+
+<script>
+  $(function(){
+    $("#quizBox").hide(); // ซ่อนส่วนแบบทดสอบตอนเริ่มต้น
+    
+    // เริ่มทำแบบทดสอบ
+    $("#btnStart").click(function(){
+       $("#startBox").hide();
+       $("#quizBox").show();
+       displayQuizList();
+    });
+
+    // ตรวจคำตอบเมื่อคลิกปุ่ม
+    $("#btnCheckAnswer").click(function(){
+      checkAnswers();
+    });
+  });
+
+  // ฟังก์ชันแสดงรายการคำถาม
+  function displayQuizList(){
+    $("#quizListBox").html("<div class='p-1'><strong>ข้อสอบ</strong></div>");
+    for(var i in quizlist){
+      displayQuiz(i, quizlist[i]);
+    }
+  }
+
+  // ฟังก์ชันแสดงคำถามแต่ละข้อ
+  function displayQuiz(i, q){
+    var no = parseInt(i) + 1;
+    $("#quizListBox").append("<div class='p-2' id='question"+no+"'>ข้อที่ "+no+". <div>"+q.title+"</div>");
+    for(var c in q.options){
+      var v = parseInt(c) + 1;
+      $("#quizListBox").append("<div class='p-2'>");
+      $("#quizListBox").append("<input type='radio' name='q"+no+"' value='"+v+"'> "+v+". ");  
+      $("#quizListBox").append(q.options[c]+"</div>");  
+    }
+    $("#quizListBox").append("</div>");
+  }
+
+  // ฟังก์ชันตรวจคำตอบ
+  function checkAnswers(){
+    let score = 0; // คะแนนรวม
+    let totalQuestions = quizlist.length; // จำนวนคำถามทั้งหมด
+
+    $("#resultBox").empty(); // ล้างผลลัพธ์เก่า
+
+    for (let i = 0; i < quizlist.length; i++) {
+      let no = i + 1; // เลขคำถาม
+      let selectedValue = $(`input[name='q${no}']:checked`).val(); // คำตอบที่เลือก
+      let correctAnswer = quizlist[i].answer; // คำตอบที่ถูกต้อง
+
+      // ตรวจสอบคำตอบ
+      if (parseInt(selectedValue) === correctAnswer) {
+        score++; // เพิ่มคะแนนถ้าคำตอบถูกต้อง
+        $(`#question${no}`).append("<div class='text-success'>✅ ตอบถูก!</div>");
+      } else {
+        $(`#question${no}`).append(`<div class='text-danger'>❌ ตอบผิด! คำตอบที่ถูกต้องคือข้อ ${correctAnswer}: ${quizlist[i].options[correctAnswer - 1]}</div>`);
+      }
+    }
+
+    // แสดงผลคะแนนรวม
+    $("#resultBox").html(`<h3>คุณได้คะแนน ${score} จาก ${totalQuestions}</h3>`);
+  }
+
+  // คำถามและคำตอบ
+  var quizlist = [
+  
+    {
+        "title": "น้ำแข็งแห้ง มีสีอะไร",
+        "options": [
+            "ขาว",
+            "ดำ",
+            "น้ำตาล",
+            "แดง"
+        ],
+        "answer": 1
+    },
+    {
+        "title": "กุ้งทะเล มีพยาธิหรือไม่",
+        "options": [
+            "ไม่มี",
+            "มี",
+            "อาจจะมีแต่เล็กน้อย",
+            "มีเยอะ"
+        ],
+        "answer": 1
+    },
+    {
+        "title": "ใครคิดค้นการทำระเบิดปรามณู",
+        "options": [
+            "เซอร์ ไอแซก นิวตัน",
+            "วิลเลี่ยม เธอเนอร์",
+            "อัลเบิร์ต ไอสไตน์",
+            "โจเซมี่ กิบบ์"
+        ],
+        "answer": 3
+    },
+    {
+        "title": "โลกของเรา มีอายุกี่ปี",
+        "options": [
+            "4600 ล้านปี",
+            "4700 ล้านปี",
+            "6000 ล้านปี",
+            "9874 ล้านปี"
+        ],
+        "answer": 1
+    },
+    {
+        "title": "กาบหอยแครงจะหุบเข้าหากันเมื่อใด",
+        "options": [
+            "มื่อขาดน้ำ",
+            "เมื่อโดนแสงแดด",
+            "เมื่ออากาศชื้น",
+            "เมื่อถูกสัมผัส"
+        ],
+        "answer": 4
+    },
+    
+    {
+        "title": "พืชชนิดใดเมื่อสัมผัสแล้วจะแสดงความรู้สึกให้เห็นได้",
+        "options": [
+            "ไม้ไผ่",
+            "ต้นไมยราบ",
+            "ต้นกระถิ่น",
+            "กระเทียม"
+        ],
+        "answer": 2
+    },
+    {
+        "title": "การแบ่งชนิดสารเป็นสารเนื้อเดียวและสารเนื้อผสมใช้สิ่้งใดเป็นเกณฑ์ในการจำแนก",
+        "options": [
+            "อนุภาคของสาร",
+            "การนำไฟฟ้า",
+            "การสลาย",
+            "ความสารถในการละลาย"
+        ],
+        "answer": 4
+    },
+    {
+        "title": "ถ้าไฟที่มีความร้อนที่สุดจะมีสีอะไร",
+        "options": [
+            "สีฟ้า",
+            "สีแดง",
+            "สีเหลือง",
+            "สีขาว"
+        ],
+        "answer": 1
+    },
+    {
+        "title": "ฟันของมนุษย์มีกี่ซี่",
+        "options": [
+            "32 ซี่",
+            "33 ซี่",
+            "31ซี่",
+            "34 ซี่"
+        ],
+        "answer": 1
+    },
+    {
+        "title": "คลื่นความถี่มีหน่วยเป็นอะไร",
+        "options": [
+            "Hz",
+            "Sz Sz",
+            "Kg",
+            "Gz"
+        ],
+        "answer": 3
+    },
+
+    {
+        "title": "แป้งเป็นสารอาหารชนิดใด",
+        "options": [
+            "ไขมัน",
+            "โปรตีน",
+            "แป้ง",
+            "วิตามิน"
+        ],
+        "answer": 3
+    },
+    {
+        "title": "อุณหภูมิมีหน่วยเป็นอะไร",
+        "options": [
+            "ฟาเรนไฮด์",
+            "นิวตัน",
+            "กรัม",
+            "เมตร"
+        ],
+        "answer": 1
+    },
+    {
+        "title": "อุกาบาตเกิดจากอะไร",
+        "options": [
+            "การระเบิด",
+            "การเผาไหม้",
+            "การสะสมพลังงาน",
+            "แรงดึงดูดของโลก"
+        ],
+        "answer": 4
+    },
+    {
+        "title": "เตาไฟแช่แข็ง เป็นฉายาของ ดาวใด",
+        "options": [
+            "ดาวศุกร์",
+            "ดาวพลูโต",
+            "ดาวโลก",
+            "ดาวพุธ"
+        ],
+        "answer": 4
+    },
+    {
+        "title": "ดาวดวงใด ที่มีอุณหภูมิสูงที่สุด",
+        "options": [
+            "ดาวศุกร์",
+            "ดาวอังคาร",
+            "ดาวพฤหัสบดี",
+            "ดาวเสาร์"
+        ],
+        "answer": 1
+    },
+
+    {
+        "title": "ดาวที่มีวงแหวนล้อมรอบ",
+        "options": [
+            "ดาวศุกร์",
+            "ดาวอังคาร",
+            "ดาวพุธ",
+            "ดาวเสาร์"
+        ],
+        "answer": 4
+    },
+    {
+        "title": "องค์ประกอบของน้ำ ประกอบไปด้วยอะไรบ้าง",
+        "options": [
+            "คาร์บอน",
+            "แมกนีเซียม",
+            "ไฮโดรเจน",
+            "ไนโตรเจน"
+        ],
+        "answer": 3
+    },
+    {
+        "title": "เสียง มีคุณสมับติเป็นอะไร",
+        "options": [
+            "คลื่น",
+            "มวล",
+            "ระยะทาง",
+            "ความเค้น"
+        ],
+        "answer": 1
+    },
+    {
+        "title": "ประเทศที่มีการปล่อยก๊าซคาร์บอนไดออกไซด์มากที่สุดในโลก",
+        "options": [
+            "รัสเซีย",
+            "จีน",
+            "อังกฤษ",
+            "แคนาดา"
+        ],
+        "answer": 2
+    },
+    {
+        "title": "แสงเคลื่อนที่แบบใด",
+        "options": [
+            "เส้นโค้ง",
+            "เส้นหยัก",
+            "เส้นตรงเส้น",
+            "สามเหลี่ยม"
+        ],
+        "answer": 3
+    }
+
+
+
+];
+</script>
+</body>
+</html>
